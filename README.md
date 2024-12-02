@@ -26,7 +26,7 @@ singularity build deepvariant-"${BIN_VERSION}".sif docker://google/deepvariant:"
 
 
 ### download file 
-cp `access Token` in gitpod workspaces like 'ssh "xxxxxxxxx@xxxxxx"' 
+cp `access Token` in gitpod workspaces like 'ssh "xxxxxxxxx@xxxxxx"' \n
 login local machine 
 ```shell
 scp -r "xxxxxxxxx@xxxxxx":/workspace/gitpod/docker.tar .
