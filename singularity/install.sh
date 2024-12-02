@@ -31,7 +31,7 @@ source ~/.bashrc
 
 
 
-wget https://github.com/sylabs/singularity/releases/download/v4.2.1/singularity-ce-4.2.1.tar.gz
+#wget https://github.com/sylabs/singularity/releases/download/v4.2.1/singularity-ce-4.2.1.tar.gz
 tar -zxf singularity-ce-4.2.1.tar.gz 
 cd singularity-ce-4.2.1/
 ./mconfig --without-suid
