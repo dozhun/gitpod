@@ -34,8 +34,10 @@ source ~/.bashrc
 wget https://github.com/sylabs/singularity/releases/download/v4.2.1/singularity-ce-4.2.1.tar.gz
 tar -zxf singularity-ce-4.2.1.tar.gz 
 cd singularity-ce-4.2.1/
-./mconfig
+./mconfig --without-suid
 make -C builddir
 sudo make -C builddir install
 singularity --version 
+./mconfig -b ./buildtree -p /usr/local
 
+cd .. && rm -rf singularity-ce-4.2.1/
