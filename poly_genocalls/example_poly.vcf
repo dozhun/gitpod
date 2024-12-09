@@ -1,0 +1,8 @@
+##fileformat=VCFv4.2
+##VCF2SMCommandLine=<ID=VCF2SM,Time="2024-12-05 12:39",CommandLineOptions="Namespace(SMscript='/scripts/SuperMASSA.py', allele_depth=['RA', 'AA'], callrate=0.75, eF=None, exact=False, geno_pattern=None, geno_range=['1:84'], inference='hw', input='/home/user/example_poly.vcf', maximum_depth=500.0, minimum_depth=15.0, naive_reporting=0.9, output='/home/user/example_poly.vcf', par1_pattern=None, par1_range=None, par2_pattern=None, par2_range=None, ploidy_filter=[4], ploidy_range='4:6', post=0.8, sF=None, sigma_range=None, threads=1)">
+##INFO=<ID=NS,Number=1,Type=Integer,Description="Number of samples with a genotype call (including parents, for F1 progenies)">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total depth (including reads from parents and uncalled genotypes)">
+##INFO=<ID=Pl,Number=1,Type=Integer,Description="Estimated ploidy">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=2,Type=Integer,Description="Allelic depths for the reference and alternate alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">
