@@ -31,3 +31,13 @@ login local machine
 ```shell
 scp -r "xxxxxxxxx@xxxxxx":/workspace/gitpod/docker.tar .
 ```
+
+### a network bridge to clone github repo
+```shell
+git clone https://github.com/chaozhi/PolyOriginR 
+tar -czf PolyOriginR.tar.gz PolyOriginR
+```
+the login local machine 
+```shell
+scp -r "xxxxxxxxx@xxxxxx":/workspace/gitpod/PolyOriginR.tar.gz .
+```
