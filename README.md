@@ -43,7 +43,7 @@ scp -r "xxxxxxxxx@xxxxxx":/workspace/gitpod/docker.tar .
 git clone https://github.com/chaozhi/PolyOriginR 
 tar -czf PolyOriginR.tar.gz PolyOriginR
 ```
-the login local machine 
+then login local machine 
 ```shell
 scp -r "xxxxxxxxx@xxxxxx":/workspace/gitpod/PolyOriginR.tar.gz .
 ```
