@@ -11,6 +11,12 @@ docker image save google/deepvariant:"${BIN_VERSION}" -o deepvariant-"${BIN_VERS
 ```
 
 ## singularity sif image build
+```shell
+mkdir nf-LO && cd nf-LO
+curl -O https://raw.githubusercontent.com/evotools/nf-LO/main/singularity.def
+curl -O https://raw.githubusercontent.com/evotools/nf-LO/main/environment.yml
+singularity build nflo.sif singularity.def
+```
 
 ### config and install singularity
 ```shell
