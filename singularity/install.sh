@@ -1,7 +1,8 @@
 # Ensure repositories are up-to-date
-sudo apt-get update
+#sudo netselect-apt
+sudo apt-get update -y 
 # Install debian packages for dependencies
-sudo apt-get install -y \
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
     autoconf \
     automake \
     cryptsetup \
