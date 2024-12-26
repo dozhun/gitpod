@@ -1,0 +1,103 @@
+Bootstrap: docker
+From: continuumio/miniconda3:23.5.2-0
+Stage: build
+
+%files
+environment.yml .
+%labels
+authors="andrea.talenti@ed.ac.uk"
+description="Docker image containing base requirements for nf-LO pipelines"
+
+%post
+# Add anaconda to path, if not already present
+export PATH=/opt/conda/bin:${PATH}
+
+# Add missing mamba dependency then clean cache
+apt-get update -qq && apt-get install -y -qq \
+        libarchive-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install mamba
+conda install -c conda-forge -y mamba
+
+# Install the package as normal:
+mamba env create -f environment.yml
+
+# Install conda-pack:
+mamba install -c conda-forge conda-pack
+
+# Use conda-pack to create a standalone enviornment
+# in /venv:
+conda-pack -n nf-LO -o /tmp/env.tar && \
+mkdir /venv && cd /venv && tar xf /tmp/env.tar && \
+rm /tmp/env.tar
+
+# We've put venv in same path it'll be in final image,
+# so now fix up paths:
+/venv/bin/conda-unpack
+
+
+# The runtime-stage image; we can use Debian as the
+# base image since the Conda env also includes Python
+# for us.
+
+
+Bootstrap: docker
+From: debian:buster
+Stage: runtime
+
+%files from build
+/venv /venv
+%post
+
+# Install procps in debian to make it compatible with reporting
+apt-get update && \
+apt install -y procps gcc g++ curl make pkg-config zlib1g-dev git python2.7 file && \
+apt-get clean
+
+# Install NCBI datasets
+curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets' && \
+mv datasets /usr/local/bin && \
+chmod a+x /usr/local/bin/datasets
+
+# Define working directory
+mkdir /app && cd /app
+
+# Add minimal dependencies
+apt-get update -y -qq && \
+apt-get upgrade -y -qq && \
+apt-get install -y -qq make pkg-config zlib1g-dev git python2.7 libxrender1 libxext6 && \
+apt-get clean
+
+# Link python2.7 to python
+ln /usr/bin/python2.7 /usr/bin/python
+
+# Install mafTools
+git clone https://github.com/ComparativeGenomicsToolkit/sonLib.git && \
+cd sonLib && \
+make && \
+cd ../
+
+git clone https://github.com/ComparativeGenomicsToolkit/pinchesAndCacti.git && \
+cd pinchesAndCacti && \
+make && \
+cd ../
+
+git clone https://github.com/dentearl/mafTools.git && \
+cd mafTools && \
+sed -i 's/\${cxx}/\${cxx}\ \-lm/g' */Makefile && \
+sed -i 's/char\ fmtName\[10\]/char\ fmtName\[30\]/g' lib/sharedMaf.c && \
+sed -i 's/char\ fmtName\[10\]/char\ fmtName\[30\]/g' mafToFastaStitcher/src/mafToFastaStitcherAPI.c && \
+make && \
+cp ./bin/* /usr/local/bin && \
+chmod a+x /usr/local/bin/*
+
+# Clean-up post installation
+cd / && rm -rf /app/*
+apt-get remove -y -qq python2.7 make pkg-config git && \
+apt-get clean -y -qq && \
+apt-get autoremove -y -qq
+
+%environment
+export PATH=/venv/bin/:$PATH
