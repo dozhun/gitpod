@@ -15,7 +15,7 @@ sudo docker pull google/deepvariant:"${BIN_VERSION}"
 docker image save google/deepvariant:"${BIN_VERSION}" -o deepvariant-"${BIN_VERSION}".tar
 ```
 
-### download docker iamge 
+### download docker image 
 get SSH "access token" like 'ssh "xxxxxxxxx@xxxxxx"' in WorkSpace then 
 login local host
 ```shell
