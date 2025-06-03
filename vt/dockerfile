@@ -1,0 +1,46 @@
+# Use an official Ubuntu base image
+FROM ubuntu:22.04 AS builder
+
+# Set environment variables to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    make \
+    zlib1g-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone repository and build (steps 1-4)
+RUN git clone https://github.com/atks/vt.git \
+    && cd vt \
+    && git submodule update --init --recursive \
+    && make
+
+# Create runtime image
+FROM ubuntu:22.04
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    zlib1g \
+    libbz2-1.0 \
+    liblzma5 \
+    libcurl4 \
+    libssl3 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy compiled binary from builder
+COPY --from=builder /vt/vt /usr/local/bin/vt
+
+# Verify installation
+RUN vt -h
+
+# Set entrypoint
+ENTRYPOINT ["vt"]
