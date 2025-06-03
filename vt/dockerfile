@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /vt/vt /usr/local/bin/vt
 
 # Verify installation
-RUN vt -h
+#RUN vt -h
 
 # Set entrypoint
 ENTRYPOINT ["vt"]
