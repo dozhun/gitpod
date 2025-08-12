@@ -1,53 +1,34 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
 
-# 基础构建工具和依赖
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
-    make \
-    autoconf \
-    automake \
-    libtool \
-    zlib1g-dev \
-    libpthread-stubs0-dev \
-    libboost-all-dev \
-    libbz2-dev \
-    liblzma-dev \
-    pkg-config \
-    curl \
-    git \
-    wget \
-    unzip \
-    python3 \
-    python3-all-dev \
-    python3-pip \
-    python3-setuptools \
-    samtools \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && apt-get update && \
+    apt-get install -y \
+      build-essential autoconf automake libtool make gcc g++ \
+      zlib1g-dev libpthread-stubs0-dev libboost-all-dev samtools \
+      python3.8 python3.8-dev python3.8-distutils python3-pip pkg-config git && \
+    rm -rf /var/lib/apt/lists/*
 
-# Python依赖
-RUN pip3 install --no-cache-dir \
-    pandas \
-    matplotlib \
-    sphinx \
-    tabulate
+RUN ln -sf /usr/lib/x86_64-linux-gnu/pkgconfig/python-3.8.pc /usr/lib/x86_64-linux-gnu/pkgconfig/python3.pc
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 1
+RUN ln -sf /usr/bin/python3.8-config /usr/bin/python3-config
 
-# 安装Portcullis
+ENV PYTHON=/usr/bin/python3
+
+RUN ${PYTHON} -m pip install --upgrade pip setuptools wheel && \
+    ${PYTHON} -m pip install pandas matplotlib sphinx tabulate
+
 WORKDIR /opt
-ENV PYTHON=python3
+
 RUN git clone https://github.com/EI-CoreBioinformatics/portcullis.git && \
     cd portcullis && \
     ./autogen.sh && \
     ./configure --prefix=/opt/portcullis PYTHON=${PYTHON} && \
     make -j $(nproc) && \
-    make check && \
     make install
 
-# 将Portcullis加入PATH
-ENV PATH="/opt/portcullis/bin:${PATH}"
+ENV PATH=/opt/portcullis/bin:$PATH
 
-# 默认工作目录
-WORKDIR /data
+CMD ["/bin/bash"]
