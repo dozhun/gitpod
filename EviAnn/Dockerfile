@@ -28,9 +28,9 @@ RUN git clone https://github.com/lh3/minimap2.git && \
 
 RUN git clone https://github.com/DaehwanKimLab/hisat2.git && \
     cd hisat2 && make && \
-    cp hisat2-* /usr/local/bin/ && \
-    cd .. && rm -rf hisat2
+    cd .. 
 
+ENV PATH="/opt/hisat2:${PATH}"
 
 COPY EviAnn-2.0.3.tar.gz /opt/
 RUN tar xvzf EviAnn-2.0.3.tar.gz && \
